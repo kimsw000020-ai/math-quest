@@ -13,7 +13,7 @@
         input[type="number"] { width: 180px; padding: 15px; font-size: 28px; text-align: center; margin: 20px 0; border: 2px solid #ccc; border-radius: 8px; }
         #timer { color: #dc3545; font-size: 26px; font-weight: bold; }
         #info { color: #0056b3; font-size: 16px; font-weight: bold; margin-bottom: 20px; }
-        #question { font-size: 36px; font-weight: bold; margin: 30px 0; white-space: pre-line; }
+        #question { font-size: 32px; font-weight: bold; margin: 30px 0; white-space: pre-line; line-height: 1.4; }
         #feedback { font-size: 18px; font-weight: bold; height: 30px; }
     </style>
 </head>
@@ -103,34 +103,144 @@
             document.getElementById('answer-input').focus();
         }
 
+        // 파이썬 코드의 알고리즘 100% 반영
         function generateQuestion() {
             let q_str, ans;
             let lvl = level;
+            
             while(true) {
                 let type_sel = Math.floor(Math.random() * 3) + 1;
-                if(grade === 1) {
+                
+                if (grade === 1) {
                     let limit = 9 + lvl;
                     let a = Math.floor(Math.random() * limit) + 1;
                     let b = Math.floor(Math.random() * limit) + 1;
-                    if(type_sel === 1) { q_str = `${a} + ${b} = ?`; ans = a + b; }
-                    else if(type_sel === 2) { if(a<b) [a,b] = [b,a]; q_str = `${a} - ${b} = ?`; ans = a - b; }
+                    if (type_sel === 1) { q_str = `${a} + ${b} = ?`; ans = a + b; }
+                    else if (type_sel === 2) { 
+                        if (a < b) { let temp = a; a = b; b = temp; }
+                        q_str = `${a} - ${b} = ?`; ans = a - b; 
+                    }
                     else { q_str = `${a} + ? = ${a+b}`; ans = b; }
                 } 
-                // JS 변환: 아버님의 2~6학년 로직도 브라우저 용으로 단순화하여 동일하게 적용
-                else {
-                    let a = Math.floor(Math.random() * (10 + grade*5)) + 2;
-                    let b = Math.floor(Math.random() * 9) + 2;
-                    if(grade % 2 === 0) { q_str = `${a} x ${b} = ?`; ans = a * b; }
-                    else { q_str = `${a*b} ÷ ${b} = ?`; ans = a; }
+                else if (grade === 2) {
+                    if (type_sel === 1) {
+                        let a = Math.floor(Math.random() * 8) + 2;
+                        let b = Math.floor(Math.random() * 8) + 2;
+                        q_str = `${a} x ${b} = ?`; ans = a * b;
+                    } else if (type_sel === 2) {
+                        let a = Math.floor(Math.random() * (41 + lvl*2)) + 10;
+                        let b = Math.floor(Math.random() * (41 + lvl*2)) + 10;
+                        let op = Math.random() < 0.5 ? '+' : '-';
+                        if (op === '-' && a < b) { let temp = a; a = b; b = temp; }
+                        q_str = `${a} ${op} ${b} = ?`; ans = op === '+' ? a + b : a - b;
+                    } else {
+                        let start = Math.floor(Math.random() * 9) + 2;
+                        let step = Math.floor(Math.random() * 4) + 2;
+                        q_str = `규칙: ${start}, ${start+step}, ${start+step*2}, ?`; ans = start+step*3;
+                    }
+                }
+                else if (grade === 3) {
+                    type_sel = Math.floor(Math.random() * 4) + 1;
+                    if (type_sel === 1) {
+                        let a = Math.floor(Math.random() * (40+lvl)) + 11;
+                        let b = Math.floor(Math.random() * 8) + 2;
+                        q_str = `${a} x ${b} = ?`; ans = a * b;
+                    } else if (type_sel === 2) {
+                        let ans_val = Math.floor(Math.random() * 14) + 2;
+                        let b = Math.floor(Math.random() * 8) + 2;
+                        q_str = `${ans_val * b} ÷ ${b} = ?`; ans = ans_val;
+                    } else if (type_sel === 3) {
+                        let den = Math.floor(Math.random() * 6) + 4;
+                        let n1 = Math.floor(Math.random() * (den-2)) + 1;
+                        let n2 = Math.floor(Math.random() * (den-n1-1)) + 1;
+                        q_str = `${n1}/${den} + ${n2}/${den} = ? / ${den}`; ans = n1 + n2;
+                    } else {
+                        let cm = (Math.floor(Math.random() * 5) + 1) * 100 + (Math.floor(Math.random() * 81) + 10);
+                        q_str = `${cm}cm = ? m`; ans = cm / 100.0;
+                    }
+                }
+                else if (grade === 4) {
+                    type_sel = Math.floor(Math.random() * 4) + 1;
+                    if (type_sel === 1) {
+                        let a = Math.floor(Math.random() * 201) + 100;
+                        let b = Math.floor(Math.random() * 30) + 11;
+                        q_str = `${a} x ${b} = ?`; ans = a * b;
+                    } else if (type_sel === 2) {
+                        let ans_val = Math.floor(Math.random() * 30) + 11;
+                        let b = Math.floor(Math.random() * 30) + 11;
+                        q_str = `${ans_val * b} ÷ ${b} = ?`; ans = ans_val;
+                    } else if (type_sel === 3) {
+                        let w = Math.floor(Math.random() * 16) + 5;
+                        let h = Math.floor(Math.random() * 16) + 5;
+                        q_str = `[직사각형 넓이]\n가로 ${w}, 세로 ${h}`; ans = w * h;
+                    } else {
+                        let a = Math.floor(Math.random() * 89) + 11;
+                        let b = Math.floor(Math.random() * 89) + 11;
+                        q_str = `${a/10} + ${b/10} = ?`; ans = Math.round(a+b)/10;
+                    }
+                }
+                else if (grade === 5) {
+                    type_sel = Math.floor(Math.random() * 4) + 1;
+                    if (type_sel === 1) {
+                        let a = Math.floor(Math.random() * 21) + 10;
+                        let b = Math.floor(Math.random() * 11) + 5;
+                        let c = Math.floor(Math.random() * 4) + 2;
+                        q_str = `(${a} - ${b}) x ${c} = ?`; ans = (a - b) * c;
+                    } else if (type_sel === 2) {
+                        let w = Math.floor(Math.random() * 15) + 6;
+                        let h = Math.floor(Math.random() * 12) + 4;
+                        if ((w * h) % 2 !== 0) w += 1;
+                        q_str = `[삼각형 넓이]\n밑변 ${w}, 높이 ${h}`; ans = (w * h) / 2;
+                    } else if (type_sel === 3) {
+                        let a = Math.floor(Math.random() * 41) + 10;
+                        let b = Math.floor(Math.random() * 41) + 10;
+                        let c = Math.floor(Math.random() * 41) + 10;
+                        q_str = `[평균 구하기]\n${a}, ${b}, ${c}의 평균`; ans = (a + b + c) / 3;
+                    } else {
+                        let pairs = [[2,4], [2,6], [3,6]];
+                        let pair = pairs[Math.floor(Math.random() * pairs.length)];
+                        let max_ab = Math.max(pair[0], pair[1]);
+                        q_str = `1/${pair[0]} + 1/${pair[1]} = ? / ${max_ab}`; 
+                        ans = Math.floor(max_ab/pair[0]) + Math.floor(max_ab/pair[1]);
+                    }
+                }
+                else if (grade === 6) {
+                    type_sel = Math.floor(Math.random() * 4) + 1;
+                    if (type_sel === 1) {
+                        let a = Math.floor(Math.random() * 4) + 2;
+                        let b = Math.floor(Math.random() * 5) + 3;
+                        let mult = Math.floor(Math.random() * 5) + 2;
+                        q_str = `${a} : ${b} = ${a*mult} : ?`; ans = b * mult;
+                    } else if (type_sel === 2) {
+                        let totals = [100, 200, 500, 1000];
+                        let total = totals[Math.floor(Math.random() * totals.length)];
+                        let pct = (Math.floor(Math.random() * 9) + 1) * 10;
+                        q_str = `${total}의 ${pct}% = ?`; ans = Math.floor(total * (pct / 100));
+                    } else if (type_sel === 3) {
+                        let r = Math.floor(Math.random() * 8) + 3;
+                        q_str = `[원 넓이]\n반지름 ${r} (원주율 3.1)`; ans = Math.round(r * r * 3.1 * 10) / 10;
+                    } else {
+                        let w = Math.floor(Math.random() * 6) + 3;
+                        let h = Math.floor(Math.random() * 6) + 3;
+                        let d = Math.floor(Math.random() * 6) + 3;
+                        q_str = `[직육면체 부피]\n가로 ${w}, 세로 ${h}, 높이 ${d}`; ans = w * h * d;
+                    }
                 }
                 
-                if(q_str !== lastQuestion) { lastQuestion = q_str; return {q: q_str, a: ans}; }
+                if (q_str !== lastQuestion) { 
+                    lastQuestion = q_str; 
+                    return {q: q_str, a: ans}; 
+                }
             }
         }
 
         function checkAnswer() {
             let userVal = parseFloat(document.getElementById('answer-input').value);
-            if(isNaN(userVal)) { document.getElementById('feedback').innerText = "⚠️ 숫자만 입력!"; document.getElementById('feedback').style.color = "red"; return; }
+            if(isNaN(userVal)) { 
+                document.getElementById('feedback').innerText = "⚠️ 숫자(소수점 포함)만 입력!"; 
+                document.getElementById('feedback').style.color = "red"; 
+                return; 
+            }
             
             document.getElementById('submit-btn').disabled = true;
             if(Math.abs(userVal - answer) < 0.01) {
@@ -138,7 +248,8 @@
                 document.getElementById('feedback').innerText = "⭕ 딩동댕! 훌륭해요!";
                 document.getElementById('feedback').style.color = "#28a745";
             } else {
-                document.getElementById('feedback').innerText = `❌ 오답 (정답: ${answer})`;
+                let ans_str = Number.isInteger(answer) ? answer : answer.toFixed(1);
+                document.getElementById('feedback').innerText = `❌ 오답 (정답: ${ans_str})`;
                 document.getElementById('feedback').style.color = "#dc3545";
             }
             
@@ -170,8 +281,14 @@
                 } else { timeLbl.style.color = "#6c757d"; }
                 saveRecords();
                 
-                btn.innerText = "다음 퀘스트 도전";
-                btn.onclick = () => { level++; initLevel(); };
+                if (level === 20) {
+                    title.innerText = '🎉 최종 클리어! 🎉'; title.style.color = '#FFD700';
+                    btn.innerText = "처음 화면으로";
+                    btn.onclick = () => { showSelection(); };
+                } else {
+                    btn.innerText = "다음 퀘스트 도전";
+                    btn.onclick = () => { level++; initLevel(); };
+                }
             } else {
                 title.innerText = "💧 통과 실패 💧"; title.style.color = "#dc3545";
                 desc.innerText = `성적: ${correct_count}개 / 10개 (8개 이상 통과)`;
